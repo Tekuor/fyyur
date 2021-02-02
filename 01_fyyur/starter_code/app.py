@@ -82,14 +82,18 @@ def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
   data = []
-  address = db.session.query(Venue).distinct('city', 'state').all()
-  for value in address:
+  addresses = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state).all()
+  for address in addresses:
     body = {}
-    body['city'] = value.city
-    body['state'] = value.state
-    test = db.session.query(Venue).filter(Venue.city==value.city, Venue.state==value.state).all()
-    venues = db.session.query(Venue.name, Venue.id, func.count(case([(Show.start_time >= date.today(), 1)])).label('num_upcoming_shows')).outerjoin(Show).filter(Venue.city==value.city, Venue.state==value.state).group_by(Venue.id).all()
-    body['venues'] = venues
+    body['city'] = address.city
+    body['state'] = address.state
+    venues = db.session.query(Venue).filter_by(state=address.state).filter_by(city=address.city).all()
+    venue_info = []
+    for venue in venues:
+      shows = db.session.query(Show).filter_by(venue_id=venue.id).filter(Show.start_time >= date.today()).all()
+      setattr(venue, 'num_upcoming_shows', len(shows))
+      venue_info.append(venue)
+    body['venues'] = venue_info
     data.append(body)
   return render_template('pages/venues.html', areas=data);
 

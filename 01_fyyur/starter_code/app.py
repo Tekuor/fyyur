@@ -134,41 +134,14 @@ def create_venue_submission():
   # TODO: modify data to be the data object returned from db insertion
   error = False
   data = {}
+  form =  VenueForm(request.form)
   try:
-    name =request.form.get('name', '')
-    city = request.form.get('city', '')
-    state = request.form.get('state', '')
-    address = request.form.get('address', '')
-    phone = request.form.get('phone', '')
-    genres = request.form.getlist('genres')
-    facebook_link = request.form.get('facebook_link', '')
-    image_link = request.form.get('image_link', '')
-    seeking_talent = request.form.get('seeking_talent', '')
-    seeking_description = request.form.get('seeking_description', '')
-    website = request.form.get('website', '')
-
-    if seeking_talent == 'y':
-      seeking_talent=True
-    else:
-      seeking_talent=False
-
-    venue = Venue(
-    name=name, 
-    city=city, 
-    state=state,
-    address=address,
-    phone=phone,
-    facebook_link=facebook_link,
-    genres=genres,
-    image_link=image_link,
-    seeking_talent=seeking_talent,
-    seeking_description=seeking_description,
-    website=website
-    )
+    venue = Venue()
+    form.populate_obj(venue)
     db.session.add(venue)
     db.session.commit()
     data = venue
-  except:
+  except Exception:
     error = True
     db.session.rollback()
     print(sys.exc_info())
@@ -194,7 +167,7 @@ def delete_venue(venue_id):
     venue = Venue.query.get(venue_id)
     db.session.delete(venue)
     db.session.commit()
-  except:
+  except Exception:
     error = True
     db.session.rollback()
     print(sys.exc_info())
@@ -273,7 +246,7 @@ def edit_artist_submission(artist_id):
     artist.seeking_description = request.form.get('seeking_description', '')
     artist.website = request.form.get('website', '')
     db.session.commit()
-  except:
+  except Exception:
     db.session.rollback()
   finally:
     db.session.close()
@@ -308,7 +281,7 @@ def edit_venue_submission(venue_id):
     venue.seeking_description = request.form.get('seeking_description', '')
     venue.website = request.form.get('website', '')
     db.session.commit()
-  except:
+  except Exception:
     db.session.rollback()
   finally:
     db.session.close()
@@ -329,39 +302,14 @@ def create_artist_submission():
   # TODO: modify data to be the data object returned from db insertion
   error = False
   data = {}
+  form =  ArtistForm(request.form)
   try:
-    name = request.form['name']
-    city = request.form['city']
-    state = request.form['state']
-    phone = request.form['phone']
-    genres = request.form.getlist('genres')
-    facebook_link = request.form['facebook_link']
-    image_link = request.form.get('image_link', '')
-    seeking_venue = request.form.get('seeking_venue', '')
-    seeking_description = request.form.get('seeking_description', '')
-    website = request.form.get('website', '')
-
-    if seeking_venue == 'y':
-      seeking_venue=True
-    else:
-      seeking_venue=False
-
-    artist = Artist(
-    name=name, 
-    city=city, 
-    state=state,
-    phone=phone,
-    facebook_link=facebook_link,
-    genres=genres,
-    image_link=image_link,
-    seeking_venue=seeking_venue,
-    seeking_description=seeking_description,
-    website=website
-    )
+    artist = Artist()
+    form.populate_obj(artist)
     db.session.add(artist)
     db.session.commit()
     data = artist
-  except:
+  except Exception:
     error = True
     db.session.rollback()
     print(sys.exc_info())
@@ -408,7 +356,7 @@ def create_show_submission():
     db.session.add(show)
     db.session.commit()
     body = show
-  except:
+  except Exception:
     error = True
     db.session.rollback()
   finally:

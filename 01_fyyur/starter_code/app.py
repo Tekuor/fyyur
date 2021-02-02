@@ -379,6 +379,29 @@ def not_found_error(error):
 def server_error(error):
     return render_template('errors/500.html'), 500
 
+@app.errorhandler(400)
+def bad_request(error):
+    return render_template('errors/400.html'), 400
+
+@app.errorhandler(401)
+def unauthorized(error):
+    return render_template('errors/401.html'), 401
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template('errors/403.html'), 403
+
+@app.errorhandler(405)
+def invalid_method(error):
+    return render_template('errors/405.html'), 405
+
+@app.errorhandler(409)
+def duplicate_resource(error):
+    return render_template('errors/409.html'), 409
+
+@app.errorhandler(422)
+def not_processable(error):
+    return render_template('errors/422.html'), 422
 
 if not app.debug:
     file_handler = FileHandler('error.log')
